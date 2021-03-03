@@ -8,7 +8,7 @@ const reports = {
     jacoco: parseJacoco
 };
 
-export const parse = ({reportFile, type, workingDirectory = '.'}, config) => {
+export const parse = ({reportFile, type, workingDirectory = '.', namespace = ''}, config) => {
     if (!reportFile) {
         throw new Error('Missing required parameter `reportFile`');
     }
@@ -19,7 +19,7 @@ export const parse = ({reportFile, type, workingDirectory = '.'}, config) => {
 
     if (reports[type]) {
         config.workingDirectory = path.resolve(config.projectRoot, workingDirectory);
-
+        config.namespace = namespace;
         return reports[type](reportFile, config);
     }
 
