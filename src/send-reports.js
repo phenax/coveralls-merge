@@ -4,14 +4,18 @@ import {post} from './post';
 import {getProgramConfig} from './util/config';
 
 module.exports = (reports, givenConfig = {}) => {
-    const config = getProgramConfig(givenConfig),
-        reportPromises = reports.map(report => parse(report, config));
+    const config = getProgramConfig(givenConfig);
+    const reportPromises = reports.map(report => parse(report, config));
 
     Promise.all(reportPromises)
         .then(results => {
             const mergedResults = merge(results);
 
-            post(mergedResults);
+            if (!config.dry) {
+                post(mergedResults);
+            } else {
+                console.log(`[DRY RUN] Merged ${reports.length} reports`);
+            }
         })
         .catch(error => {
             console.log('Error:', error);
